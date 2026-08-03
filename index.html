@@ -28,17 +28,30 @@
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
 body{
-  background:var(--bg);
+  background:#DCD6C4;
   color:var(--ink);
   font-family:'IBM Plex Sans',sans-serif;
-  padding-bottom:78px;
   -webkit-tap-highlight-color:transparent;
+  min-height:100vh;
 }
 h1,h2,h3,.display{font-family:'Fraunces',serif;}
 .mono{font-family:'IBM Plex Mono',monospace;}
 a{color:var(--primary);}
 button{font-family:inherit;cursor:pointer;}
 .hidden{display:none !important;}
+
+/* Phone-frame shell: keeps the whole app boxed to a phone-like width,
+   even on wide desktop screens, so top bar / content / tab bar all line up. */
+.app-shell{
+  max-width:480px;margin:0 auto;position:relative;
+  min-height:100vh;background:var(--bg);
+  box-shadow:0 0 0 1px var(--line), 0 24px 60px rgba(32,48,31,0.18);
+  transform:translateZ(0); /* makes this the containing block for position:fixed children (tabbar, toast) */
+  padding-bottom:78px;
+}
+@media (max-width:480px){
+  .app-shell{ box-shadow:none; }
+}
 
 /* Top bar */
 .topbar{
@@ -54,7 +67,7 @@ button{font-family:inherit;cursor:pointer;}
 .topbar .stats{display:flex;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:13px;}
 .topbar .stats b{font-size:15px;color:var(--gold-soft);}
 
-main{max-width:640px;margin:0 auto;padding:16px;}
+main{padding:16px;}
 
 /* Growth ring hero on home */
 .hero{
@@ -188,6 +201,7 @@ table.data-table th{color:var(--ink-soft);font-weight:600;font-size:11px;text-tr
 </style>
 </head>
 <body>
+<div class="app-shell">
 
 <div class="topbar">
   <div class="brand"><span class="seed">🌱</span><span class="brand-text">Nhật Ký Gieo Hạt</span></div>
@@ -208,6 +222,9 @@ table.data-table th{color:var(--ink-soft);font-weight:600;font-size:11px;text-tr
 </div>
 
 <div class="toast" id="toast"></div>
+
+</div>
+<!-- /.app-shell -->
 
 <script>
 /* ============ DATA LAYER ============ */
