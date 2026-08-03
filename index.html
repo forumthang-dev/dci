@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Nhật Ký Gieo Hạt</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2F4D3A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F3EA;
+  --paper:#FFFFFF;
+  --ink:#20301F;
+  --ink-soft:#5B6B58;
+  --primary:#33553C;
+  --primary-dark:#20351F;
+  --primary-soft:#E4EBDF;
+  --gold:#C79A2E;
+  --gold-soft:#F3E7C8;
+  --rust:#A94E36;
+  --rust-soft:#F4E2DC;
+  --line:#E3DECD;
+  --shadow: 0 2px 10px rgba(32,48,31,0.06);
+  --radius:16px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'IBM Plex Sans',sans-serif;
+  padding-bottom:78px;
+  -webkit-tap-highlight-color:transparent;
+}
+h1,h2,h3,.display{font-family:'Fraunces',serif;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+a{color:var(--primary);}
+button{font-family:inherit;cursor:pointer;}
+.hidden{display:none !important;}
+
+/* Top bar */
+.topbar{
+  position:sticky;top:0;z-index:20;
+  background:var(--primary-dark);
+  color:#F3EFDF;
+  padding:14px 18px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.topbar .brand{display:flex;align-items:center;gap:10px;}
+.topbar .brand .seed{font-size:22px;}
+.topbar .brand-text{font-family:'Fraunces',serif;font-size:17px;font-weight:600;letter-spacing:.2px;}
+.topbar .stats{display:flex;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:13px;}
+.topbar .stats b{font-size:15px;color:var(--gold-soft);}
+
+main{max-width:640px;margin:0 auto;padding:16px;}
+
+/* Growth ring hero on home */
+.hero{
+  background:linear-gradient(160deg,var(--primary) 0%,var(--primary-dark) 100%);
+  border-radius:20px;color:#F3EFDF;padding:22px;margin-bottom:16px;
+  display:flex;align-items:center;gap:18px;
+}
+.hero .ring-wrap{position:relative;width:96px;height:96px;flex:none;}
+.hero .ring-wrap svg{transform:rotate(-90deg);}
+.hero .ring-wrap .ring-label{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.hero .ring-label b{font-family:'Fraunces',serif;font-size:26px;line-height:1;}
+.hero .ring-label span{font-size:10px;opacity:.8;}
+.hero .hero-text .greeting{font-family:'Fraunces',serif;font-size:19px;margin:0 0 4px;}
+.hero .hero-text p{margin:0;font-size:13px;opacity:.85;}
+
+/* Cards */
+.card{
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px;margin-bottom:14px;box-shadow:var(--shadow);
+}
+.card h3{margin:0 0 12px;font-size:16px;display:flex;align-items:center;gap:8px;}
+.card h3 .icon{font-size:18px;}
+.section-title{font-family:'Fraunces',serif;font-size:20px;margin:6px 0 12px;}
+.section-sub{color:var(--ink-soft);font-size:13px;margin:-8px 0 16px;}
+
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.stat-box{background:var(--primary-soft);border-radius:12px;padding:10px;text-align:center;}
+.stat-box b{display:block;font-family:'Fraunces',serif;font-size:20px;color:var(--primary-dark);}
+.stat-box span{font-size:11px;color:var(--ink-soft);}
+
+/* Shortcut chips on home */
+.shortcuts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+.shortcut{
+  background:var(--paper);border:1px solid var(--line);border-radius:14px;
+  padding:12px 4px;text-align:center;font-size:12px;color:var(--ink);
+}
+.shortcut .em{font-size:20px;display:block;margin-bottom:4px;}
+
+/* Forms */
+label{display:block;font-size:12px;color:var(--ink-soft);margin:10px 0 4px;font-weight:600;}
+input[type=text],input[type=number],input[type=date],textarea,select{
+  width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
+  font-family:inherit;font-size:14px;background:#FCFBF7;color:var(--ink);
+}
+textarea{min-height:56px;resize:vertical;}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--primary);outline-offset:1px;}
+
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  border:none;border-radius:10px;padding:10px 16px;font-size:14px;font-weight:600;
+}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-ghost{background:var(--primary-soft);color:var(--primary-dark);}
+.btn-gold{background:var(--gold);color:#3A2A05;}
+.btn-danger{background:var(--rust-soft);color:var(--rust);}
+.btn-sm{padding:6px 10px;font-size:12px;border-radius:8px;}
+.btn-block{width:100%;justify-content:center;}
+.btn-row{display:flex;gap:8px;margin-top:12px;}
+
+/* Tag list (add/remove chips) */
+.list-add{display:flex;gap:8px;margin-top:6px;}
+.list-add input{flex:1;}
+.list-items{display:flex;flex-direction:column;gap:6px;margin-top:8px;}
+.list-item{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  background:var(--primary-soft);border-radius:10px;padding:8px 10px;font-size:13px;
+}
+.list-item .txt{flex:1;word-break:break-word;}
+.list-item button{background:none;border:none;color:var(--rust);font-size:15px;padding:2px 4px;}
+.checklist-item{background:var(--paper);border:1px solid var(--line);}
+.checklist-item.done .txt{text-decoration:line-through;color:var(--ink-soft);}
+.checklist-item input[type=checkbox]{width:auto;transform:scale(1.2);}
+
+/* Tabs subnav (goal accordion etc.) */
+.accordion-head{
+  display:flex;justify-content:space-between;align-items:center;cursor:pointer;
+  padding:4px 0;
+}
+.accordion-body{margin-top:10px;}
+.chev{transition:transform .15s;}
+.chev.open{transform:rotate(90deg);}
+
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{
+  border:1px solid var(--line);background:var(--paper);border-radius:999px;
+  padding:6px 12px;font-size:12px;color:var(--ink-soft);
+}
+.chip.selected{background:var(--gold);color:#3A2A05;border-color:var(--gold);font-weight:600;}
+
+.empty-state{text-align:center;padding:28px 10px;color:var(--ink-soft);}
+.empty-state .em{font-size:30px;display:block;margin-bottom:8px;}
+
+table.data-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+table.data-table th,table.data-table td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);}
+table.data-table th{color:var(--ink-soft);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;}
+
+/* Bottom tab bar */
+.tabbar{
+  position:fixed;bottom:0;left:0;right:0;z-index:30;
+  background:var(--paper);border-top:1px solid var(--line);
+  display:flex;justify-content:space-around;padding:6px 2px calc(6px + env(safe-area-inset-bottom));
+}
+.tabbar button{
+  background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:2px;
+  color:var(--ink-soft);font-size:10px;padding:4px 2px;flex:1;
+}
+.tabbar button .em{font-size:19px;}
+.tabbar button.active{color:var(--primary-dark);font-weight:700;}
+
+.view{display:none;}
+.view.active{display:block;}
+
+.bar-chart{display:flex;align-items:flex-end;gap:6px;height:110px;margin-top:10px;}
+.bar-chart .bar{flex:1;background:var(--primary);border-radius:6px 6px 0 0;position:relative;min-height:2px;}
+.bar-chart .bar span{position:absolute;bottom:-18px;left:0;right:0;text-align:center;font-size:9px;color:var(--ink-soft);}
+
+.toast{
+  position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
+  background:var(--primary-dark);color:#fff;padding:10px 18px;border-radius:999px;
+  font-size:13px;z-index:60;opacity:0;pointer-events:none;transition:opacity .25s, transform .25s;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
+
+.link-inline{color:var(--primary);text-decoration:underline;font-weight:600;cursor:pointer;background:none;border:none;font-size:13px;padding:0;}
+.small-note{font-size:11.5px;color:var(--ink-soft);margin-top:6px;}
+.hr{height:1px;background:var(--line);margin:14px 0;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="seed">🌱</span><span class="brand-text">Nhật Ký Gieo Hạt</span></div>
+  <div class="stats">🔥 <b id="topStreak">0</b> ngày</div>
+</div>
+
+<main id="main"></main>
+
+<div class="tabbar" id="tabbar">
+  <button data-view="home" class="active"><span class="em">🏠</span>Trang chủ</button>
+  <button data-view="plan"><span class="em">🌒</span>Kế hoạch</button>
+  <button data-view="action"><span class="em">🌇</span>Nhìn lại</button>
+  <button data-view="todo"><span class="em">✅</span>Việc & Ơn</button>
+  <button data-view="diamond"><span class="em">💎</span>Đáng nhớ</button>
+  <button data-view="finance"><span class="em">👛</span>Sổ quỹ</button>
+  <button data-view="progress"><span class="em">🌾</span>Hành trình</button>
+  <button data-view="profile"><span class="em">🌿</span>Về bạn</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ DATA LAYER ============ */
+const STORAGE_KEY = 'sgh_k365_data';
+
+function defaultData(){
+  return {
+    profile:{ name:'', bigWhy:'', goals:[
+      {id:uid(),text:'💰 Tài chính vững vàng'},{id:uid(),text:'🤝 Những mối quan hệ chân thành'},
+      {id:uid(),text:'🌤️ Sức khoẻ thân và tâm'},{id:uid(),text:'🧘 Một tâm trí bình yên'},{id:uid(),text:'🌍 Sống có ích cho người khác'}
+    ], sheetsUrl:'' },
+    entries:{},   // date -> {plan:{...}, action:{...}}
+    todos:{},     // date -> {checklist:[], gratitude:[]}
+    diamonds:{ mine:[], admired:[] },
+    finance:{ entries:[], funds:['Quỹ Gieo Hạt Chung'], jars:['Tiết kiệm','Báo hiếu','Cho con'], incomeGoal:0 },
+    appointments:[]
+  };
+}
+
+let data = loadData();
+
+function loadData(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return defaultData();
+    const parsed = JSON.parse(raw);
+    return Object.assign(defaultData(), parsed, {
+      entries: parsed.entries||{}, todos: parsed.todos||{},
+      diamonds: Object.assign({mine:[],admired:[]}, parsed.diamonds||{}),
+      finance: Object.assign(defaultData().finance, parsed.finance||{}),
+      profile: Object.assign(defaultData().profile, parsed.profile||{})
+    });
+  }catch(e){ console.error('Load lỗi',e); return defaultData(); }
+}
+
+function saveData(sync){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  renderAll();
+  if(sync!==false) autoSync();
+}
+
+function uid(){ return Math.random().toString(36).slice(2,10); }
+function todayStr(d){ const dt=d?new Date(d):new Date(); return dt.toISOString().slice(0,10); }
+function fmtVND(n){ n=Number(n)||0; return n.toLocaleString('vi-VN')+'đ'; }
+function fmtDateVN(iso){ if(!iso) return '—'; const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
+
+function ensureEntry(date){
+  if(!data.entries[date]) data.entries[date] = {
+    plan:{ goalIds:[], land:{buddy:[],benefactor:[],org:[],urgent:[]}, ways:{direct:[],indirect:[],teach:[]} },
+    action:{ done:[], b4a:[], b4b:[], b4c:[], b4d:[], fourPowers:[] }
+  };
+  return data.entries[date];
+}
+function ensureTodo(date){
+  if(!data.todos[date]) data.todos[date] = {checklist:[],gratitude:[]};
+  return data.todos[date];
+}
+
+/* streak: consecutive days (ending today or yesterday) with a completed B3-B4 action */
+function hasCheckin(date){
+  const e = data.entries[date];
+  if(!e) return false;
+  return (e.action.done.length>0)||(e.action.b4a.length>0)||(e.action.b4b.length>0)||(e.action.b4c.length>0)||(e.action.b4d.length>0);
+}
+function computeStreak(){
+  let streak=0; let cur = new Date();
+  // if today has no checkin yet, start counting from yesterday
+  if(!hasCheckin(todayStr())) cur.setDate(cur.getDate()-1);
+  while(hasCheckin(todayStr(cur))){ streak++; cur.setDate(cur.getDate()-1); }
+  return streak;
+}
+function totalCheckins(){ return Object.keys(data.entries).filter(hasCheckin).length; }
+function totalSeeds(){ // seeds = every logged plan/action item, rough proxy like original "hạt giống"
+  let n=0;
+  Object.values(data.entries).forEach(e=>{
+    n += e.plan.land.buddy.length+e.plan.land.benefactor.length+e.plan.land.org.length+e.plan.land.urgent.length;
+    n += e.action.done.length;
+  });
+  n += data.diamonds.mine.length;
+  return n;
+}
+
+/* ============ TOAST ============ */
+let toastTimer;
+function toast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),1800);
+}
+
+/* ============ NAV ============ */
+document.getElementById('tabbar').addEventListener('click',e=>{
+  const btn = e.target.closest('button[data-view]'); if(!btn) return;
+  showView(btn.dataset.view);
+});
+function showView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('#tabbar button').forEach(b=>b.classList.toggle('active', b.dataset.view===name));
+  const el=document.getElementById('view-'+name);
+  if(el) el.classList.add('active');
+  window.scrollTo({top:0});
+}
+
+/* ============ RENDER ROOT ============ */
+function renderAll(){
+  document.getElementById('topStreak').textContent = computeStreak();
+  main.innerHTML = viewHome()+viewPlan()+viewAction()+viewTodo()+viewDiamond()+viewFinance()+viewProgress()+viewProfile();
+  // restore active view
+  const activeBtn = document.querySelector('#tabbar button.active');
+  showView(activeBtn?activeBtn.dataset.view:'home');
+  bindAllEvents();
+}
+</script>
+<script>
+/* main is assigned here with var (not const) so later scripts can see the real DOM element */
+var main = document.getElementById('main');
+</script>
+
+<script>
+/* ============ VIEW: HOME ============ */
+function viewHome(){
+  const streak = computeStreak();
+  const seeds = totalSeeds();
+  const circumference = 2*Math.PI*40;
+  const pct = Math.min(streak/30,1); // full ring at 30 days
+  const dash = circumference*pct;
+  const name = data.profile.name || 'bạn';
+  const today = todayStr();
+  const t = ensureTodo(today);
+  const upcoming = (data.appointments||[]).filter(a=>a.date>=today).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,3);
+
+  return `<section class="view" id="view-home">
+    <div class="hero">
+      <div class="ring-wrap">
+        <svg width="96" height="96" viewBox="0 0 96 96">
+          <circle cx="48" cy="48" r="40" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="8"/>
+          <circle cx="48" cy="48" r="40" fill="none" stroke="#E9C55A" stroke-width="8"
+            stroke-dasharray="${circumference}" stroke-dashoffset="${circumference-dash}" stroke-linecap="round"/>
+        </svg>
+        <div class="ring-label"><b>${streak}</b><span>NGÀY 🔥</span></div>
+      </div>
+      <div class="hero-text">
+        <p class="greeting">${new Date().getHours()<12?'☀️':'🌙'} ${new Date().getHours()<12?`Ngày mới, hạt giống mới, ${name}.`:'Một ngày sắp khép lại — kịp gieo gì chưa nào?'}</p>
+        <p>${streak===0?'Không sao — mọi khu vườn đều bắt đầu từ hạt đầu tiên.':streak<7?'Cứ đều đặn từng chút một, khu vườn sẽ tự lớn lên.':streak<30?'Một tuần rồi đấy — đất đang quen dần với tay bạn.':'Một tháng kiên trì. Nhìn lại mà xem, bạn đã đi xa hơn mình nghĩ.'}</p>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:14px;">
+      <div class="stat-box"><b>${streak}</b><span>🔥 chuỗi ngày không đứt</span></div>
+      <div class="stat-box"><b>${seeds}</b><span>🌱 hạt đã gieo</span></div>
+    </div>
+
+    <div class="shortcuts">
+      <div class="shortcut" onclick="showView('todo')"><span class="em">🙏</span>Biết ơn</div>
+      <div class="shortcut" onclick="showView('plan')"><span class="em">🌾</span>Gieo hôm nay</div>
+      <div class="shortcut" onclick="showView('diamond')"><span class="em">💎</span>Đáng nhớ</div>
+      <div class="shortcut" onclick="showView('finance')"><span class="em">👛</span>Sổ quỹ</div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">✅</span>Danh sách hôm nay có gì?</h3>
+      ${ t.checklist.length? `<div class="list-items">${t.checklist.map(c=>`<div class="list-item checklist-item ${c.done?'done':''}"><span class="txt">${esc(c.text)}</span></div>`).join('')}</div>`
+        : `<div class="empty-state"><span class="em">🌱</span>Chưa có việc nào cả — vậy hôm nay bạn định dành thời gian cho điều gì?</div>` }
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">📅</span>Ai đó đang chờ bạn</h3>
+      ${ upcoming.length? `<div class="list-items">${upcoming.map(a=>`<div class="list-item"><span class="txt"><b>${fmtDateVN(a.date)}</b> — ${esc(a.text)}</span></div>`).join('')}</div>`
+        : `<div class="empty-state"><span class="em">📅</span>Không có ai đang hẹn cả — cứ thong thả.</div>` }
+    </div>
+  </section>`;
+}
+
+/* ============ VIEW: PLAN (B1-B2) ============ */
+function viewPlan(){
+  const date = window._planDate || (function(){ const d=new Date(); d.setDate(d.getDate()+1); return todayStr(d); })();
+  window._planDate = date;
+  const e = ensureEntry(date);
+  const goals = data.profile.goals;
+
+  const landLabels = {buddy:'Người đồng hành',benefactor:'Người bạn mang ơn',org:'Nơi chạm tới nhiều người hơn',urgent:'Một tình huống cần ngay'};
+  const wayLabels = {direct:'Gieo bằng tay',indirect:'Gieo bằng lòng',teach:'Gieo bằng lời'};
+
+  return `<section class="view" id="view-plan">
+    <h2 class="section-title">🌒 Gieo trước khi ngủ</h2>
+    <p class="section-sub">Vài phút tối nay, cho một ngày mai rõ ràng hơn</p>
+
+    <div class="card">
+      <label>📅 Bạn đang viết cho hôm nay hay ngày mai?</label>
+      <input type="date" id="planDateInput" value="${date}">
+      <p class="small-note">💡 Chọn đúng ngày để câu chuyện nối liền mạch nhé — nếu viết vào buổi tối, chọn <b>ngày mai</b>.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🎯</span>Hôm nay/mai bạn muốn hướng về đâu?</h3>
+      <p class="small-note" style="margin-top:-6px;">Chọn một hoặc vài điều — không cần ôm hết mọi thứ cùng lúc.</p>
+      <div class="chip-row" id="planGoals">
+        ${goals.map(g=>`<button class="chip ${e.plan.goalIds.includes(g.id)?'selected':''}" data-act="toggle-goal" data-id="${g.id}">${esc(g.text)}</button>`).join('')}
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🌱</span>Ai đang cần một hạt giống từ bạn?</h3>
+      ${Object.keys(landLabels).map(k=>listBlock(`plan.land.${k}`, landLabels[k], e.plan.land[k])).join('')}
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🤲</span>Bạn định gieo bằng cách nào?</h3>
+      ${Object.keys(wayLabels).map(k=>listBlock(`plan.ways.${k}`, wayLabels[k], e.plan.ways[k])).join('')}
+      <p class="small-note">💡 Nếu muốn hạt giống bén rễ sâu hơn: nghĩ về điều đó thật lòng 🧠, nói ra thành lời 🗣️, rồi biến nó thành hành động 🤲.</p>
+    </div>
+
+    <button class="btn btn-primary btn-block" data-act="save-plan">🌱 Gieo kế hoạch này</button>
+  </section>`;
+}
+
+/* ============ VIEW: ACTION (B3-B4) ============ */
+function viewAction(){
+  const date = window._actionDate || todayStr();
+  window._actionDate = date;
+  const e = ensureEntry(date);
+  const powers = [
+    {id:'B1',t:'Nhận ra'},{id:'B2',t:'Thấy tiếc thật lòng'},
+    {id:'B3',t:'Đặt một giới hạn'},{id:'B4',t:'Làm điều ngược lại'}
+  ];
+  return `<section class="view" id="view-action">
+    <h2 class="section-title">🌇 Một ngày đã trôi qua</h2>
+    <p class="section-sub">So với điều bạn định làm tối qua — hôm nay đã diễn ra thế nào?</p>
+
+    <div class="card">
+      <label>📅 Ghi cho ngày nào?</label>
+      <input type="date" id="actionDateInput" value="${date}" max="${todayStr()}">
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">✅</span>Bạn đã thực sự làm được gì?</h3>
+      ${listBlock('action.done','Ghi lại thật cụ thể — kể cả số tiền, nếu có', e.action.done)}
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">☕</span>Bốn phút dừng lại</h3>
+      <p class="small-note" style="margin-top:-6px;">Giống như nhấp một ngụm cà phê chậm rãi — bốn câu hỏi nhỏ để khép lại một ngày trọn vẹn.</p>
+      ${listBlock('action.b4a','Điều tử tế nào bạn đã làm hôm nay?', e.action.b4a)}
+      ${listBlock('action.b4b','Bạn ngưỡng mộ ai, vì điều gì họ đã làm?', e.action.b4b)}
+      <div class="btn-row"><button class="btn btn-gold btn-sm" data-act="to-diamond">💎 Khoảnh khắc này đáng lưu vào Sổ Đáng Nhớ</button></div>
+      ${listBlock('action.b4c','Nếu được gửi lời chúc tốt đẹp nhất cho một người, bạn sẽ dành nó cho ai?', e.action.b4c)}
+      ${listBlock('action.b4d','Điều gì khiến bạn thấy biết ơn vì mình vẫn đang kiên trì?', e.action.b4d)}
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">⚡</span>Có điều gì muốn làm lại không?</h3>
+      <p class="section-sub" style="margin-top:-4px;">Không sao cả — đây là chỗ để bạn nhẹ nhàng chỉnh hướng, không phải để tự trách.</p>
+      <div class="chip-row">
+        ${powers.map(p=>`<button class="chip ${e.action.fourPowers.includes(p.id)?'selected':''}" data-act="toggle-power" data-id="${p.id}">${p.t}</button>`).join('')}
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-block" data-act="save-action">💾 Khép lại ngày hôm nay</button>
+  </section>`;
+}
+
+/* ============ VIEW: TODO ============ */
+function viewTodo(){
+  const date = window._todoDate || todayStr();
+  window._todoDate = date;
+  const t = ensureTodo(date);
+  return `<section class="view" id="view-todo">
+    <h2 class="section-title">✅ Hôm nay có gì cần làm</h2>
+    <p class="section-sub">Danh sách việc, và một góc nhỏ để dừng lại biết ơn</p>
+
+    <div class="card">
+      <label>📅 Ngày</label>
+      <input type="date" id="todoDateInput" value="${date}">
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">✅</span>Việc cần làm</h3>
+      <div class="list-add"><input type="text" id="checklistInput" placeholder="Thêm một việc..."><button class="btn btn-primary btn-sm" data-act="add-checklist">Thêm</button></div>
+      <div class="list-items">
+        ${t.checklist.length? t.checklist.map(c=>`
+          <div class="list-item checklist-item ${c.done?'done':''}">
+            <input type="checkbox" ${c.done?'checked':''} data-act="toggle-check" data-id="${c.id}">
+            <span class="txt">${esc(c.text)}</span>
+            <button data-act="del-check" data-id="${c.id}">✕</button>
+          </div>`).join('') : `<div class="empty-state"><span class="em">✅</span>Chưa có việc nào cho hôm nay.</div>`}
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🙏</span>Điều khiến bạn mỉm cười hôm nay</h3>
+      <div class="list-add"><input type="text" id="gratitudeInput" placeholder="Có thể là điều rất nhỏ..."><button class="btn btn-primary btn-sm" data-act="add-gratitude">Thêm</button></div>
+      <div class="list-items">
+        ${t.gratitude.length? t.gratitude.map(g=>`
+          <div class="list-item"><span class="txt">${esc(g.text)}</span><button data-act="del-gratitude" data-id="${g.id}">✕</button></div>`).join('')
+          : `<div class="empty-state"><span class="em">🙏</span>Chưa có gì được ghi lại — thử nhìn quanh một chút xem?</div>`}
+      </div>
+    </div>
+  </section>`;
+}
+
+/* ============ VIEW: DIAMOND ============ */
+function viewDiamond(){
+  const year = new Date().getFullYear();
+  const mineThisYear = data.diamonds.mine.filter(d=>d.date && d.date.startsWith(String(year)));
+  const totalVND = mineThisYear.reduce((s,d)=>s+(Number(d.amount)||0),0);
+  return `<section class="view" id="view-diamond">
+    <h2 class="section-title">💎 Những hạt giống đặc biệt</h2>
+    <p class="section-sub">Không phải ngày nào cũng có một khoảnh khắc như thế này — nên hãy giữ lại</p>
+
+    <div class="grid-3" style="margin-bottom:14px;">
+      <div class="stat-box"><b>${data.diamonds.mine.length}</b><span>✨ hạt giống đáng nhớ</span></div>
+      <div class="stat-box"><b>${fmtVND(totalVND)}</b><span>đã gieo trong năm ${year}</span></div>
+      <div class="stat-box"><b>${data.diamonds.admired.length}</b><span>✨ khoảnh khắc ngưỡng mộ</span></div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">💎</span>Ghi lại một khoảnh khắc</h3>
+      <label>Danh mục</label>
+      <select id="dmSection"><option value="mine">📜 Hạt mình gieo</option><option value="admired">✨ Điều mình ngưỡng mộ ở người khác</option></select>
+      <label>Đây thuộc kiểu nào?</label>
+      <select id="dmType"><option>Rộng lòng</option><option>Sáng suốt</option><option>Chăm sóc bản thân</option><option>Gắn kết</option><option>Ứng cứu kịp thời</option><option>Khác</option></select>
+      <label>Ngày</label>
+      <input type="date" id="dmDate" value="${todayStr()}">
+      <label>Dành cho ai / nơi nào</label>
+      <input type="text" id="dmLand" placeholder="VD: một người bạn, một quỹ, một dự án...">
+      <label>Số tiền (VND, để trống nếu không phải tiền)</label>
+      <input type="number" id="dmAmount" placeholder="0">
+      <label>Kể lại một chút</label>
+      <textarea id="dmDetail" placeholder="Để sau này đọc lại vẫn nhớ rõ cảm giác lúc đó..."></textarea>
+      <div class="btn-row"><button class="btn btn-gold btn-block" data-act="add-diamond">💎 Lưu lại khoảnh khắc này</button></div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">📜</span>Những khoảnh khắc mình gieo</h3>
+      ${diamondList(data.diamonds.mine,'mine')}
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">✨</span>Những điều mình ngưỡng mộ</h3>
+      ${diamondList(data.diamonds.admired,'admired')}
+    </div>
+  </section>`;
+}
+function diamondList(list,section){
+  if(!list.length) return `<div class="empty-state"><span class="em">💎</span>Chưa có khoảnh khắc nào — lần tới có gì đáng nhớ, đừng quên quay lại đây.</div>`;
+  return `<div class="list-items">${list.slice().reverse().map(d=>`
+    <div class="list-item" style="align-items:flex-start;">
+      <span class="txt"><b>${fmtDateVN(d.date)}</b> · ${esc(d.type)} · ${esc(d.land||'')}${d.amount?` · ${fmtVND(d.amount)}`:''}<br><span style="color:var(--ink-soft)">${esc(d.detail||'')}</span></span>
+      <button data-act="del-diamond" data-section="${section}" data-id="${d.id}">🗑️</button>
+    </div>`).join('')}</div>`;
+}
+
+/* ============ VIEW: FINANCE ============ */
+function viewFinance(){
+  const now = new Date(); const ym = todayStr().slice(0,7);
+  const monthEntries = data.finance.entries.filter(e=>e.date && e.date.startsWith(ym));
+  const income = monthEntries.filter(e=>e.type==='income').reduce((s,e)=>s+Number(e.amount||0),0);
+  const expense = monthEntries.filter(e=>e.type==='expense').reduce((s,e)=>s+Number(e.amount||0),0);
+  const seed = monthEntries.filter(e=>e.type==='seed').reduce((s,e)=>s+Number(e.amount||0),0);
+  const jarAlloc = monthEntries.filter(e=>e.type==='jar').reduce((s,e)=>s+Number(e.amount||0),0);
+  const balance = income-expense-seed-jarAlloc;
+  const jarsTotal = data.finance.entries.filter(e=>e.type==='jar').reduce((s,e)=>s+Number(e.amount||0),0);
+  const goalPct = data.finance.incomeGoal? Math.min(100,Math.round(income/data.finance.incomeGoal*100)) : 0;
+
+  return `<section class="view" id="view-finance">
+    <h2 class="section-title">👛 Đồng tiền đi về đâu</h2>
+    <p class="section-sub">Nhìn rõ dòng tiền, để gieo hạt mà vẫn an tâm</p>
+
+    <div class="card">
+      <h3><span class="icon">🎯</span>Bạn đang nhắm tới con số nào tháng này?</h3>
+      <div class="btn-row">
+        <input type="number" id="incomeGoalInput" value="${data.finance.incomeGoal||''}" placeholder="Mục tiêu (VND/tháng)">
+        <button class="btn btn-ghost btn-sm" data-act="save-income-goal">Lưu</button>
+      </div>
+      <p class="small-note">Tiến độ đến hôm nay: ${goalPct}% — ${fmtVND(income)} / ${fmtVND(data.finance.incomeGoal)}</p>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:14px;">
+      <div class="stat-box"><b>${fmtVND(balance)}</b><span>💰 Số dư còn lại tháng này</span></div>
+      <div class="stat-box"><b>${fmtVND(expense)}</b><span>Chi tiêu tháng này</span></div>
+      <div class="stat-box"><b>${fmtVND(seed)}</b><span>Gieo hạt tháng này</span></div>
+      <div class="stat-box"><b>${fmtVND(jarsTotal)}</b><span>🏺 Tổng các hũ</span></div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">➕</span>Ghi lại một khoản</h3>
+      <label>Loại giao dịch</label>
+      <select id="finType">
+        <option value="expense">🛍️ Chi tiêu</option>
+        <option value="seed">🌱 Gieo hạt</option>
+        <option value="income">💵 Thu nhập</option>
+        <option value="jar">🏺 Cất riêng</option>
+      </select>
+      <label>Ngày</label>
+      <input type="date" id="finDate" value="${todayStr()}">
+      <label>Mô tả</label>
+      <input type="text" id="finDesc" placeholder="VD: Ăn trưa, gieo quỹ học bổng...">
+      <label>Mảnh đất / Quỹ (nếu Gieo hạt)</label>
+      <select id="finFund"><option value="">— Không áp dụng —</option>${data.finance.funds.map(f=>`<option>${esc(f)}</option>`).join('')}</select>
+      <label>Cất vào đâu (nếu Cất riêng)</label>
+      <select id="finJar"><option value="">— Chọn nơi cất —</option>${data.finance.jars.map(j=>`<option>${esc(j)}</option>`).join('')}</select>
+      <label>Số tiền (VND)</label>
+      <input type="number" id="finAmount" placeholder="0">
+      <div class="btn-row"><button class="btn btn-primary btn-block" data-act="add-finance">💾 Ghi lại</button></div>
+      <p class="small-note">💎 Đây là một khoản đáng nhớ — muốn lưu thêm vào Sổ Những Điều Đáng Nhớ không?</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">📋</span>Lịch sử gần nhất</h3>
+      ${financeTable()}
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">⚙️</span>Danh sách quỹ & nơi cất tiền</h3>
+      <label>📚 Các quỹ bạn hay gieo vào</label>
+      <div class="list-add"><input type="text" id="fundInput" placeholder="Tên quỹ mới..."><button class="btn btn-ghost btn-sm" data-act="add-fund">Thêm</button></div>
+      <div class="chip-row" style="margin-top:8px;">${data.finance.funds.map((f,i)=>`<span class="chip">${esc(f)} <button data-act="del-fund" data-i="${i}" style="border:none;background:none;color:var(--rust);cursor:pointer;">✕</button></span>`).join('')}</div>
+      <label>🏺 Các nơi bạn cất riêng tiền</label>
+      <div class="list-add"><input type="text" id="jarInput" placeholder="Tên mới..."><button class="btn btn-ghost btn-sm" data-act="add-jar">Thêm</button></div>
+      <div class="chip-row" style="margin-top:8px;">${data.finance.jars.map((j,i)=>`<span class="chip">${esc(j)} <button data-act="del-jar" data-i="${i}" style="border:none;background:none;color:var(--rust);cursor:pointer;">✕</button></span>`).join('')}</div>
+    </div>
+  </section>`;
+}
+function financeTable(){
+  const list = data.finance.entries.slice().reverse().slice(0,20);
+  if(!list.length) return `<div class="empty-state"><span class="em">💰</span>Chưa có giao dịch nào — bắt đầu ghi từ hôm nay cũng không muộn.</div>`;
+  const typeLabel={expense:'🛍️ Chi',seed:'🌱 Gieo',income:'💵 Thu',jar:'🏺 Cất'};
+  return `<table class="data-table"><thead><tr><th>Ngày</th><th>Loại</th><th>Mô tả</th><th>Số tiền</th><th></th></tr></thead><tbody>
+    ${list.map(e=>`<tr><td>${fmtDateVN(e.date)}</td><td>${typeLabel[e.type]||e.type}</td><td>${esc(e.desc||e.fund||e.jar||'')}</td><td class="mono">${fmtVND(e.amount)}</td><td><button data-act="del-finance" data-id="${e.id}" style="border:none;background:none;color:var(--rust);">🗑️</button></td></tr>`).join('')}
+  </tbody></table>`;
+}
+
+/* ============ VIEW: PROGRESS ============ */
+function viewProgress(){
+  const streak = computeStreak();
+  const total = totalCheckins();
+  const now = new Date();
+  const thisMonth = Object.keys(data.entries).filter(d=>hasCheckin(d) && d.startsWith(todayStr().slice(0,7))).length;
+  const thisYear = Object.keys(data.entries).filter(d=>hasCheckin(d) && d.startsWith(String(now.getFullYear()))).length;
+
+  // last 7 days bar chart of seeds logged
+  const days=[]; for(let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); days.push(todayStr(d)); }
+  const counts = days.map(d=>{
+    const e = data.entries[d]; if(!e) return 0;
+    return e.plan.land.buddy.length+e.plan.land.benefactor.length+e.plan.land.org.length+e.plan.land.urgent.length+e.action.done.length;
+  });
+  const maxC = Math.max(1,...counts);
+  const dow = ['CN','T2','T3','T4','T5','T6','T7'];
+
+  const recent = Object.keys(data.entries).filter(hasCheckin).sort().reverse().slice(0,5);
+
+  const goalProgress = data.profile.goals.map(g=>{
+    const cnt = Object.values(data.entries).filter(e=>e.plan.goalIds.includes(g.id)).length;
+    return {g,cnt};
+  });
+
+  return `<section class="view" id="view-progress">
+    <h2 class="section-title">🌾 Nhìn lại chặng đường</h2>
+    <p class="section-sub">Không phải để so sánh với ai — chỉ để thấy rõ mình đã đi được bao xa</p>
+
+    <div class="btn-row" style="margin-bottom:14px;">
+      <button class="btn btn-ghost btn-sm" data-act="sync-pull">↻ Tải Sheets</button>
+      <button class="btn btn-ghost btn-sm" data-act="sync-push">⬆️ Đẩy toàn bộ lên Sheets</button>
+    </div>
+
+    <div class="grid-3" style="margin-bottom:14px;">
+      <div class="stat-box"><b>${streak}</b><span>Ngày không đứt quãng 🔥</span></div>
+      <div class="stat-box"><b>${total}</b><span>Lần ghi lại</span></div>
+      <div class="stat-box"><b>${thisMonth}</b><span>Trong tháng này</span></div>
+    </div>
+    <div class="grid-2" style="margin-bottom:14px;">
+      <div class="stat-box"><b>${thisYear}</b><span>Trong năm ${now.getFullYear()}</span></div>
+      <div class="stat-box"><b>${totalSeeds()}</b><span>🌱 Tổng hạt đã gieo</span></div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🌱</span>Bảy ngày gần nhất trông như thế nào?</h3>
+      <div class="bar-chart">
+        ${counts.map((c,i)=>`<div class="bar" style="height:${Math.max(4,c/maxC*90)}px;"><span>${dow[new Date(days[i]).getDay()]}</span></div>`).join('')}
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🌳</span>Từng hướng đi đang tiến ra sao?</h3>
+      ${goalProgress.map(({g,cnt})=>`<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span>${esc(g.text)}</span><span class="mono">${cnt} ngày</span></div><div style="background:var(--primary-soft);border-radius:6px;height:8px;margin-top:4px;"><div style="background:var(--primary);height:8px;border-radius:6px;width:${Math.min(100,cnt*8)}%;"></div></div></div>`).join('')}
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">📖</span>Những ngày gần đây</h3>
+      ${recent.length? `<div class="list-items">${recent.map(d=>`<div class="list-item" style="align-items:flex-start;"><span class="txt"><b>${fmtDateVN(d)}</b><br><span style="color:var(--ink-soft)">${esc((data.entries[d].action.done[0]?.text)||'Đã ghi lại')}</span></span><button class="btn btn-ghost btn-sm" data-act="edit-day" data-date="${d}">✏️ Sửa</button></div>`).join('')}</div>`
+        : `<div class="empty-state"><span class="em">🌱</span>Trang nhật ký còn trắng — hôm nay là một khởi đầu tốt để lấp đầy nó.</div>`}
+    </div>
+  </section>`;
+}
+
+/* ============ VIEW: PROFILE ============ */
+function viewProfile(){
+  const p = data.profile;
+  return `<section class="view" id="view-profile">
+    <h2 class="section-title">🌿 Về bạn</h2>
+    <p class="section-sub">Cập nhật bất cứ khi nào mọi thứ thay đổi</p>
+
+    <div class="card">
+      <label>Tên của bạn</label>
+      <input type="text" id="profName" value="${escAttr(p.name)}" placeholder="Để mình biết gọi bạn là gì nhé">
+      <label>💎 Điều gì đang giữ chân bạn với việc này?</label>
+      <textarea id="profBigWhy" placeholder='VD: "Tôi muốn trở thành một người sống tử tế và có ích."'>${esc(p.bigWhy)}</textarea>
+
+      <h3 style="margin-top:16px;"><span class="icon">🎯</span>Bạn muốn hạt giống của mình lớn lên ở đâu?</h3>
+      <div class="list-add"><input type="text" id="goalInput" placeholder="Thêm một hướng đi mới..."><button class="btn btn-ghost btn-sm" data-act="add-goal">Thêm</button></div>
+      <div class="list-items">${p.goals.map(g=>`<div class="list-item"><span class="txt">${esc(g.text)}</span><button data-act="del-goal" data-id="${g.id}">✕</button></div>`).join('')}</div>
+
+      <div class="btn-row"><button class="btn btn-primary btn-block" data-act="save-profile">💾 Lưu thay đổi</button></div>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">🔄</span>Giữ an toàn cho dữ liệu của bạn</h3>
+      <p class="small-note">Kết nối một lần, dùng được trên mọi thiết bị, không lo mất khi đổi điện thoại.<br><br>
+        <b>B1.</b> Mở Google Sheets mới → Extensions → Apps Script<br>
+        <b>B2.</b> Paste nội dung file <b>AppsScript.js</b> (đi kèm bộ tải này) vào<br>
+        <b>B3.</b> Deploy → New deployment → Web app → Execute as Me → Who has access: Anyone → Copy URL
+      </p>
+      <input type="text" id="sheetsUrlInput" value="${escAttr(p.sheetsUrl)}" placeholder="https://script.google.com/macros/s/.../exec">
+      <div class="btn-row">
+        <button class="btn btn-ghost btn-sm" data-act="save-sheets-url">Cập nhật URL</button>
+        <button class="btn btn-ghost btn-sm" data-act="check-sheets">Kiểm tra</button>
+      </div>
+      <p class="small-note" id="sheetsStatus"></p>
+    </div>
+
+    <div class="card">
+      <h3><span class="icon">📅</span>Ai đó đang chờ bạn</h3>
+      <label>Ngày hẹn</label>
+      <input type="date" id="apptDate" value="${todayStr()}">
+      <label>Nội dung</label>
+      <input type="text" id="apptText" placeholder="VD: hẹn gặp bạn đồng hành, gọi điện thăm ai đó...">
+      <div class="btn-row"><button class="btn btn-ghost btn-block" data-act="add-appt">+ Thêm lịch hẹn</button></div>
+      <div class="list-items" style="margin-top:10px;">
+        ${(data.appointments||[]).slice().sort((a,b)=>a.date.localeCompare(b.date)).map(a=>`<div class="list-item"><span class="txt"><b>${fmtDateVN(a.date)}</b> — ${esc(a.text)}</span><button data-act="del-appt" data-id="${a.id}">✕</button></div>`).join('') || ''}
+      </div>
+    </div>
+
+    <div class="card">
+      <button class="btn btn-danger btn-block" data-act="reset-all">🔄 Đặt lại từ đầu</button>
+    </div>
+  </section>`;
+}
+
+/* small util: generic add/remove list block for text arrays with {id,text} */
+function listBlock(path,label,items){
+  return `<div style="margin-bottom:14px;">
+    <label>${label}</label>
+    <div class="list-add"><input type="text" data-list-input="${path}" placeholder="Thêm..."><button class="btn btn-ghost btn-sm" data-act="add-list" data-path="${path}">Thêm</button></div>
+    <div class="list-items">${items.map(it=>`<div class="list-item"><span class="txt">${esc(it.text)}</span><button data-act="del-list" data-path="${path}" data-id="${it.id}">✕</button></div>`).join('')}</div>
+  </div>`;
+}
+function esc(s){ return (s||'').toString().replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escAttr(s){ return esc(s); }
+
+/* path resolver for entries.<date>.<...> style paths used by listBlock (plan.land.buddy etc.) scoped to a given entry object */
+function getListRef(entry,path){
+  const parts = path.split('.'); let obj=entry;
+  for(let i=0;i<parts.length-1;i++) obj=obj[parts[i]];
+  return obj[parts[parts.length-1]];
+}
+</script>
+
+<script>
+/* ============ EVENT BINDING ============ */
+function bindAllEvents(){
+  main.querySelectorAll('input[type=date]').forEach(inp=>{
+    inp.addEventListener('change', e=>{
+      const id=e.target.id;
+      if(id==='planDateInput'){ window._planDate=e.target.value; main.innerHTML=main.innerHTML; renderAll(); showView('plan'); }
+      if(id==='actionDateInput'){ window._actionDate=e.target.value; renderAll(); showView('action'); }
+      if(id==='todoDateInput'){ window._todoDate=e.target.value; renderAll(); showView('todo'); }
+    });
+  });
+
+  main.addEventListener('click', onMainClick);
+}
+
+function onMainClick(e){
+  const b = e.target.closest('[data-act]'); if(!b) return;
+  const act = b.dataset.act;
+  const curView = document.querySelector('.view.active').id.replace('view-','');
+
+  if(act==='toggle-goal'){
+    const date = window._planDate; const entry = ensureEntry(date);
+    const id=b.dataset.id; const i=entry.plan.goalIds.indexOf(id);
+    if(i>-1) entry.plan.goalIds.splice(i,1); else entry.plan.goalIds.push(id);
+    saveData(); showView('plan'); return;
+  }
+  if(act==='toggle-power'){
+    const date = window._actionDate; const entry = ensureEntry(date);
+    const id=b.dataset.id; const i=entry.action.fourPowers.indexOf(id);
+    if(i>-1) entry.action.fourPowers.splice(i,1); else entry.action.fourPowers.push(id);
+    saveData(); showView('action'); return;
+  }
+  if(act==='add-list'){
+    const path = b.dataset.path;
+    const input = main.querySelector(`[data-list-input="${path}"]`);
+    const val = input.value.trim(); if(!val) return;
+    const date = path.startsWith('plan')? window._planDate : window._actionDate;
+    const entry = ensureEntry(date);
+    getListRef(entry,path).push({id:uid(),text:val});
+    saveData(); showView(curView); return;
+  }
+  if(act==='del-list'){
+    const path=b.dataset.path, id=b.dataset.id;
+    const date = path.startsWith('plan')? window._planDate : window._actionDate;
+    const entry = ensureEntry(date);
+    const arr = getListRef(entry,path);
+    const i=arr.findIndex(x=>x.id===id); if(i>-1) arr.splice(i,1);
+    saveData(); showView(curView); return;
+  }
+  if(act==='save-plan'){ saveData(); toast('🌱 Đã lưu kế hoạch!'); return; }
+  if(act==='save-action'){ saveData(); toast('☀️ Đã lưu & đồng bộ!'); return; }
+  if(act==='to-diamond'){ showView('diamond'); toast('💎 Ghi lại hạt khủng ở đây nhé'); return; }
+
+  if(act==='add-checklist'){
+    const inp = document.getElementById('checklistInput'); const val=inp.value.trim(); if(!val) return;
+    ensureTodo(window._todoDate).checklist.push({id:uid(),text:val,done:false});
+    saveData(); showView('todo'); return;
+  }
+  if(act==='toggle-check'){
+    const t=ensureTodo(window._todoDate); const it=t.checklist.find(c=>c.id===b.dataset.id);
+    if(it) it.done=!it.done; saveData(); showView('todo'); return;
+  }
+  if(act==='del-check'){
+    const t=ensureTodo(window._todoDate); t.checklist=t.checklist.filter(c=>c.id!==b.dataset.id);
+    saveData(); showView('todo'); return;
+  }
+  if(act==='add-gratitude'){
+    const inp=document.getElementById('gratitudeInput'); const val=inp.value.trim(); if(!val) return;
+    ensureTodo(window._todoDate).gratitude.push({id:uid(),text:val});
+    saveData(); showView('todo'); return;
+  }
+  if(act==='del-gratitude'){
+    const t=ensureTodo(window._todoDate); t.gratitude=t.gratitude.filter(g=>g.id!==b.dataset.id);
+    saveData(); showView('todo'); return;
+  }
+
+  if(act==='add-diamond'){
+    const section = document.getElementById('dmSection').value;
+    const entry = {
+      id:uid(), type:document.getElementById('dmType').value, date:document.getElementById('dmDate').value,
+      land:document.getElementById('dmLand').value.trim(), amount:document.getElementById('dmAmount').value,
+      detail:document.getElementById('dmDetail').value.trim()
+    };
+    data.diamonds[section].push(entry);
+    saveData(); showView('diamond'); toast('💎 Đã lưu vào Sổ Kim Cương!'); return;
+  }
+  if(act==='del-diamond'){
+    const section=b.dataset.section;
+    data.diamonds[section]=data.diamonds[section].filter(d=>d.id!==b.dataset.id);
+    saveData(); showView('diamond'); return;
+  }
+
+  if(act==='save-income-goal'){
+    data.finance.incomeGoal = Number(document.getElementById('incomeGoalInput').value)||0;
+    saveData(); showView('finance'); return;
+  }
+  if(act==='add-finance'){
+    const type=document.getElementById('finType').value;
+    const entry={id:uid(),type,date:document.getElementById('finDate').value,
+      desc:document.getElementById('finDesc').value.trim(),
+      fund:document.getElementById('finFund').value, jar:document.getElementById('finJar').value,
+      amount:Number(document.getElementById('finAmount').value)||0};
+    data.finance.entries.push(entry);
+    saveData(); showView('finance');
+    if(type==='seed' && entry.amount>=500000) toast('💎 Hạt khủng! Có thể lưu thêm vào Sổ Kim Cương.');
+    else toast('💰 Đã ghi lại!');
+    return;
+  }
+  if(act==='del-finance'){
+    data.finance.entries=data.finance.entries.filter(e=>e.id!==b.dataset.id);
+    saveData(); showView('finance'); return;
+  }
+  if(act==='add-fund'){
+    const inp=document.getElementById('fundInput'); const val=inp.value.trim(); if(!val) return;
+    data.finance.funds.push(val); saveData(); showView('finance'); return;
+  }
+  if(act==='del-fund'){ data.finance.funds.splice(Number(b.dataset.i),1); saveData(); showView('finance'); return; }
+  if(act==='add-jar'){
+    const inp=document.getElementById('jarInput'); const val=inp.value.trim(); if(!val) return;
+    data.finance.jars.push(val); saveData(); showView('finance'); return;
+  }
+  if(act==='del-jar'){ data.finance.jars.splice(Number(b.dataset.i),1); saveData(); showView('finance'); return; }
+
+  if(act==='add-goal'){
+    const inp=document.getElementById('goalInput'); const val=inp.value.trim(); if(!val) return;
+    data.profile.goals.push({id:uid(),text:val}); saveData(); showView('profile'); return;
+  }
+  if(act==='del-goal'){
+    data.profile.goals=data.profile.goals.filter(g=>g.id!==b.dataset.id);
+    saveData(); showView('profile'); return;
+  }
+  if(act==='save-profile'){
+    data.profile.name=document.getElementById('profName').value.trim();
+    data.profile.bigWhy=document.getElementById('profBigWhy').value.trim();
+    saveData(); showView('profile'); toast('👤 Đã lưu thông tin!'); return;
+  }
+  if(act==='save-sheets-url'){
+    data.profile.sheetsUrl=document.getElementById('sheetsUrlInput').value.trim();
+    saveData(false); toast('🔗 Đã lưu URL đồng bộ!'); return;
+  }
+  if(act==='check-sheets'){ checkSheets(); return; }
+  if(act==='add-appt'){
+    const date=document.getElementById('apptDate').value, text=document.getElementById('apptText').value.trim();
+    if(!text) return;
+    data.appointments = data.appointments||[];
+    data.appointments.push({id:uid(),date,text});
+    saveData(); showView('profile'); return;
+  }
+  if(act==='del-appt'){
+    data.appointments=(data.appointments||[]).filter(a=>a.id!==b.dataset.id);
+    saveData(); showView('profile'); return;
+  }
+  if(act==='reset-all'){
+    if(confirm('Xoá toàn bộ dữ liệu trên máy này? Hành động không thể hoàn tác.')){
+      data = defaultData(); saveData(false); showView('home'); toast('🔄 Đã đặt lại!');
+    }
+    return;
+  }
+  if(act==='edit-day'){
+    window._actionDate = b.dataset.date; window._planDate = b.dataset.date;
+    saveData(false); showView('action'); return;
+  }
+  if(act==='sync-pull'){ syncPull(); return; }
+  if(act==='sync-push'){ syncPush(true); return; }
+}
+</script>
+
+<script>
+/* ============ GOOGLE SHEETS SYNC ============ */
+let autoSyncTimer;
+function autoSync(){
+  if(!data.profile.sheetsUrl) return;
+  clearTimeout(autoSyncTimer);
+  autoSyncTimer = setTimeout(()=>syncPush(false), 1200);
+}
+async function syncPush(manual){
+  const url = data.profile.sheetsUrl; if(!url){ if(manual) toast('⚠️ Chưa nhập Google Sheets URL ở tab Hồ sơ'); return; }
+  try{
+    await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(data)});
+    if(manual) toast('⬆️ Đã đẩy dữ liệu lên Sheets!');
+  }catch(err){ console.error(err); if(manual) toast('❌ Đồng bộ thất bại, kiểm tra lại URL'); }
+}
+async function syncPull(){
+  const url = data.profile.sheetsUrl; if(!url){ toast('⚠️ Chưa nhập Google Sheets URL ở tab Hồ sơ'); return; }
+  try{
+    const res = await fetch(url); const text = await res.text();
+    const remote = JSON.parse(text);
+    if(remote && typeof remote==='object'){
+      data = Object.assign(defaultData(), remote);
+      saveData(false); toast('↻ Đã tải dữ liệu từ Sheets!');
+    }else{ toast('⚠️ Sheets chưa có dữ liệu để tải'); }
+  }catch(err){ console.error(err); toast('❌ Không tải được từ Sheets'); }
+}
+async function checkSheets(){
+  const url = document.getElementById('sheetsUrlInput').value.trim();
+  const status = document.getElementById('sheetsStatus');
+  status.textContent = 'Đang kiểm tra...';
+  try{
+    const res = await fetch(url);
+    if(res.ok){ status.textContent='✅ Kết nối thành công!'; }
+    else{ status.textContent='❌ Không kết nối được (kiểm tra quyền truy cập "Anyone")'; }
+  }catch(err){ status.textContent='❌ Lỗi kết nối: '+err.message; }
+}
+
+/* ============ INIT ============ */
+renderAll();
+
+if('serviceWorker' in navigator){
+  // Optional: register sw.js if you add one for full offline support
+}
+</script>
+</body>
+</html>
